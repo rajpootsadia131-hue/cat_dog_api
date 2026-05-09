@@ -14,7 +14,7 @@ app = FastAPI()
 MODEL_PATH = "cats_dogs_vgg16_84percent.h5"
 if not os.path.exists(MODEL_PATH):
     # Yahan Google Drive link daalna hai - abhi khaali chhod do
-    gdown.download("PASTE_YOUR_DRIVE_LINK_HERE", MODEL_PATH, quiet=False)
+    gdown.download("3DUDY2AMdrFjkLrVevCHgU0EhDt_38hMSXTgDyNeucXAaJbzF", MODEL_PATH, quiet=False)
 
 model = load_model(MODEL_PATH)
 
