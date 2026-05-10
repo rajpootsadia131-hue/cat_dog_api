@@ -1,36 +1,16 @@
-from fastapi import FastAPI, File, UploadFile 
-from fastapi.responses import JSONResponse
-from tensorflow.keras.models import load_model
-from tensorflow.keras.preprocessing import image
-import numpy as np
+import streamlit as st
 from PIL import Image
-import io
-import os
-import gdown
+import numpy as np
 
-app = FastAPI()
+st.set_page_config(page_title="Cat vs Dog Classifier")
 
-# Model download karne ka code - abhi link baad mein daalenge
-MODEL_PATH = "cats_dogs_vgg16_84percent.h5"
-if not os.path.exists(MODEL_PATH):
-    # Yahan Google Drive link daalna hai - abhi khaali chhod do
-    gdown.download("https://drive.google.com/uc?id=1tlQETy4RN0cyynpV9PE71egYfmVrZWe0", MODEL_PATH, quiet=False)
+st.title("🐱 Cat vs Dog Classifier 🐶")
+st.write("Upload a cat or dog image and I'll tell you what it is!")
 
-model = load_model(MODEL_PATH)
+uploaded_file = st.file_uploader("Choose an image...", type=["jpg","png","jpeg"])
 
-@app.get("/")
-def read_root():
-    return {"message": "Cat vs Dog Classifier API is running"}
-
-@app.post("/predict")
-async def predict(file: UploadFile = File(...)):
-    contents = await file.read()
-    img = Image.open(io.BytesIO(contents)).resize((224, 224))
-    img_array = image.img_to_array(img)
-    img_array = np.expand_dims(img_array, axis=0) / 255.0
-    
-    prediction = model.predict(img_array)
-    result = "Dog" if prediction[0][0] > 0.5 else "Cat"
-    confidence = float(prediction[0][0]) if result == "Dog" else float(1 - prediction[0][0])
-    
-    return JSONResponse({"prediction": result, "confidence": confidence})
+if uploaded_file is not None:
+    image = Image.open(uploaded_file)
+    st.image(image, caption='Uploaded Image', use_column_width=True)
+    st.write("Model loading abhi disable hai. TensorFlow hata diya tha na.")
+    st.success("Prediction: Ye feature next update mein add hoga ✅")
